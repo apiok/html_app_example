@@ -35,7 +35,7 @@ function processError(e){
 
 /*
 * This function will be called after success initialization.
-* Here you can see some examples of FAPI.Client.call method.
+* Here you can see some examples of using of "FAPI.Client.call()" method.
 */
 function initCard(){
     //at the beginning we prepare callback functions
