@@ -1,0 +1,30 @@
+
+body {
+    margin:10px;
+    padding:10px;
+    border:1px solid silver;
+    border-radius:5px;
+    width:640px;
+    height:800px;
+}
+
+#card {
+    position:relative;
+    left:160px;
+    top:200px;
+    width:320px;
+    height:400px;
+    border:1px solid silver;
+    padding:5px;
+}
+
+#userPhoto {
+    width:128px;
+    height:128px;
+    display:inline-block;
+}
+
+#userInfo {
+    display:inline-block;
+    top:0px;
+}
