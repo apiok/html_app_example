@@ -38,7 +38,7 @@ function processError(e){
 * Here you can see some examples of FAPI.Client.call method.
 */
 function initCard(){
-    //at the beginning we prepair callback functions
+    //at the beginning we prepare callback functions
     var callback_users_getCurrentUser = function(method,result,data){
         if (result)
             fillCard(result);
