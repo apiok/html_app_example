@@ -2,6 +2,7 @@
 * API initialization.
 * You have to change 2 parameters here.
 */
+var hasPublishPermission;
 var rParams = FAPI.Util.getRequestParameters();
 FAPI.init(rParams["api_server"], rParams["apiconnection"],
           /*
@@ -24,6 +25,14 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
 /*
 * End initialization.
 */
+
+/*
+* This function will be called as a callback for these methods:
+* showPermissions, showInvite, showNotification, showPayment, showConfirmation, setWindowSize
+*/
+function API_callback(method, result, data) {
+    alert("Method "+method+" finished with result "+result+", "+data);
+}
 
 /*
 * This function will be called if initialization would fail.
@@ -79,6 +88,15 @@ function fillCard(userInfo){
 }
 
 
+
 function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function checkPublishPermission(){
+    FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":"publish_to_stream"}, function(method,result,data){hasPublishPermission = result;alert(hasPublishPermission);});
+}
+
+function requirePublishPermission(){
+    FAPI.UI.showPermissions("[\"PUBLISH TO STREAM\"]");
 }
