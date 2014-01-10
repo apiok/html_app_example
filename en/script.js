@@ -4,9 +4,9 @@
 */
 var hasPublishPermission;
 var sig;
-var rParams = FAPI.Util.getRequestParameters();
 var currentUserId;
 var feedPostingObject = {};
+var rParams = FAPI.Util.getRequestParameters();
 FAPI.init(rParams["api_server"], rParams["apiconnection"],
           /*
           * First parameter:
@@ -36,11 +36,7 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
 */
 function API_callback(method, result, data) {
     alert("Method "+method+" finished with result "+result+", "+data);
-     if (method == "showConfirmation" && result == "ok") {
-         //feedPostingObject["sig"] = sig;
-         //feedPostingObject["resig"] = data;
-         //feedPostingObject["application_key"] = FAPI.UI.applicationKey;
-         
+     if (method == "showConfirmation" && result == "ok") { 
          FAPI.Client.call(feedPostingObject, function(status, data, error) {
             console.log(status + "   " + data + " " + error["error_msg"]);
         }, data);
@@ -91,35 +87,11 @@ function initCard(){
     //parameters' sequence is unimportant!
     FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"},callback_users_getCurrentUser);
     //second example: we need to call method without parameters
-    FAPI.Client.call({"method":"friends.get"},callback_friends_get);
-    
-    
+    FAPI.Client.call({"method":"friends.get"},callback_friends_get);    
 }
-
-function fillCard(userInfo){
-    document.getElementById("name").innerHTML = userInfo["first_name"];
-    document.getElementById("surname").innerHTML = userInfo["last_name"];
-    document.getElementById("city").innerHTML = userInfo["location"]["city"];
-    document.getElementById("userPhoto").src = userInfo["pic128x128"];
-}
-
-
-
-function getRandomInt(min, max){
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function checkPublishPermission(){
-    FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":"publish_to_stream"}, function(method,result,data){hasPublishPermission = result;alert(hasPublishPermission);});
-}
-
-function requirePublishPermission(){
-    FAPI.UI.showPermissions("[\"PUBLISH TO STREAM\"]");
-}
-
 
 /*
-TODO: make description
+* An example of making a publication.
 */
 function publish(){
     var description_utf8 = "Can I publish?";
@@ -136,6 +108,17 @@ function publish(){
     sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
     console.log("sig = " + sig);
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
+}
+
+function fillCard(userInfo){
+    document.getElementById("name").innerHTML = userInfo["first_name"];
+    document.getElementById("surname").innerHTML = userInfo["last_name"];
+    document.getElementById("city").innerHTML = userInfo["location"]["city"];
+    document.getElementById("userPhoto").src = userInfo["pic128x128"];
+}
+
+function getRandomInt(min, max){
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function getUrlParameters(parameter, staticURL, decode){

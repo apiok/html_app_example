@@ -2,6 +2,10 @@
 * Инициализация API.
 * Здесь необходимо изменить 2 параметра:
 */
+var hasPublishPermission;
+var sig;
+var currentUserId;
+var feedPostingObject = {};
 var rParams = FAPI.Util.getRequestParameters();
 FAPI.init(rParams["api_server"], rParams["apiconnection"],
           /*
@@ -10,6 +14,7 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
           */
           function() {
               initCard();
+              currentUserId = getUrlParameters("logged_user_id","",false);
           },
           /*
           * Второй параметр:
@@ -22,6 +27,19 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
 /*
 * Конец блока инициализации API.
 */
+
+/*
+* Эта функция вызывается после завершения выполнения следующих методов:
+* showPermissions, showInvite, showNotification, showPayment, showConfirmation, setWindowSize
+*/
+function API_callback(method, result, data) {
+    alert("Method "+method+" finished with result "+result+", "+data);
+     if (method == "showConfirmation" && result == "ok") { 
+         FAPI.Client.call(feedPostingObject, function(status, data, error) {
+            console.log(status + "   " + data + " " + error["error_msg"]);
+        }, data);
+    }
+}
 
 /*
 * Функция для обработки ошибок.
@@ -67,9 +85,27 @@ function initCard(){
     //внимание! порядок параметров значения не имеет
     FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"},callback_users_getCurrentUser);
     //пример №2: вызов метода без параметров
-    FAPI.Client.call({"method":"friends.get"},callback_friends_get);
-    
-    
+    FAPI.Client.call({"method":"friends.get"},callback_friends_get);    
+}
+
+/*
+* Пример публикации в ленту.
+*/
+function publish(){
+    var description_utf8 = "Can I publish?";
+    var caption_utf8 = "Published text";
+    feedPostingObject = {method: 'stream.publish',
+                        message: description_utf8,
+                     attachment: JSON.stringify({'caption': caption_utf8}),
+                   action_links: '[]',
+               application_key : FAPI.Client.applicationKey,
+		           session_key : FAPI.Client.sessionKey,
+		                format : FAPI.Client.format
+                        };
+
+    sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
+    console.log("sig = " + sig);
+    FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }
 
 function fillCard(userInfo){
@@ -79,7 +115,31 @@ function fillCard(userInfo){
     document.getElementById("userPhoto").src = userInfo["pic128x128"];
 }
 
-
 function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function getUrlParameters(parameter, staticURL, decode){
+   /*
+    Function: getUrlParameters
+    Description: Get the value of URL parameters either from 
+                 current URL or static URL
+    Author: Tirumal
+    URL: www.code-tricks.com
+   */
+   var currLocation = (staticURL.length)? staticURL : window.location.search,
+       parArr = currLocation.split("?")[1].split("&"),
+       returnBool = true;
+   
+   for(var i = 0; i < parArr.length; i++){
+        parr = parArr[i].split("=");
+        if(parr[0] == parameter){
+            return (decode) ? decodeURIComponent(parr[1]) : parr[1];
+            returnBool = true;
+        }else{
+            returnBool = false;            
+        }
+   }
+   
+   if(!returnBool) return false;
 }
