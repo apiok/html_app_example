@@ -2,7 +2,11 @@
 * API initialization.
 * You have to change 2 parameters here.
 */
+var hasPublishPermission;
+var sig;
 var rParams = FAPI.Util.getRequestParameters();
+var currentUserId;
+var feedPostingObject = {};
 FAPI.init(rParams["api_server"], rParams["apiconnection"],
           /*
           * First parameter:
@@ -11,6 +15,7 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
           */
           function() {
               initCard();
+              currentUserId = getUrlParameters("logged_user_id","",false);
           },
           /*
           * Second parameter:
@@ -24,6 +29,23 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
 /*
 * End initialization.
 */
+
+/*
+* This function will be called as a callback for these methods:
+* showPermissions, showInvite, showNotification, showPayment, showConfirmation, setWindowSize
+*/
+function API_callback(method, result, data) {
+    alert("Method "+method+" finished with result "+result+", "+data);
+     if (method == "showConfirmation" && result == "ok") {
+         //feedPostingObject["sig"] = sig;
+         //feedPostingObject["resig"] = data;
+         //feedPostingObject["application_key"] = FAPI.UI.applicationKey;
+         
+         FAPI.Client.call(feedPostingObject, function(status, data, error) {
+            console.log(status + "   " + data + " " + error["error_msg"]);
+        }, data);
+    }
+}
 
 /*
 * This function will be called if initialization would fail.
@@ -82,6 +104,61 @@ function fillCard(userInfo){
 }
 
 
+
 function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function checkPublishPermission(){
+    FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":"publish_to_stream"}, function(method,result,data){hasPublishPermission = result;alert(hasPublishPermission);});
+}
+
+function requirePublishPermission(){
+    FAPI.UI.showPermissions("[\"PUBLISH TO STREAM\"]");
+}
+
+
+/*
+TODO: make description
+*/
+function publish(){
+    var description_utf8 = "Can I publish?";
+    var caption_utf8 = "Published text";
+    feedPostingObject = {method: 'stream.publish',
+                        message: description_utf8,
+                     attachment: JSON.stringify({'caption': caption_utf8}),
+                   action_links: '[]',
+               application_key : FAPI.Client.applicationKey,
+		           session_key : FAPI.Client.sessionKey,
+		                format : FAPI.Client.format
+                        };
+
+    sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
+    console.log("sig = " + sig);
+    FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
+}
+
+function getUrlParameters(parameter, staticURL, decode){
+   /*
+    Function: getUrlParameters
+    Description: Get the value of URL parameters either from 
+                 current URL or static URL
+    Author: Tirumal
+    URL: www.code-tricks.com
+   */
+   var currLocation = (staticURL.length)? staticURL : window.location.search,
+       parArr = currLocation.split("?")[1].split("&"),
+       returnBool = true;
+   
+   for(var i = 0; i < parArr.length; i++){
+        parr = parArr[i].split("=");
+        if(parr[0] == parameter){
+            return (decode) ? decodeURIComponent(parr[1]) : parr[1];
+            returnBool = true;
+        }else{
+            returnBool = false;            
+        }
+   }
+   
+   if(!returnBool) return false;
 }
