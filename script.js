@@ -40,10 +40,11 @@ function processError(e){
 function initCard(){
     //at the beginning we prepare callback functions
     var callback_users_getCurrentUser = function(method,result,data){
-        if (result)
+        if (result){
             fillCard(result);
-        else
+        }else{
             processError(data);
+        }
     };
     
     var callback_friends_get = function(method,result,data){
@@ -52,12 +53,14 @@ function initCard(){
             var callback_users_getInfo = function(method,result,data){
                 if (result){
                     document.getElementById("random_friend_name_surname").innerHTML = result[0]["first_name"] + " " + result[0]["last_name"];
-                }else
+                }else{
                     processError(data);
+                }
             }
             FAPI.Client.call({"method":"users.getInfo","fields":"first_name,last_name","uids":randomFriendId},callback_users_getInfo); 
-        } else
+        }else{
             processError(data);
+        }
     }
     
     //and then we call the method:
