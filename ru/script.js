@@ -94,17 +94,19 @@ function initCard(){
 function publish(){
     var description_utf8 = "Can I publish?";
     var caption_utf8 = "Published text";
+    //подготовка параметров для публикации
     feedPostingObject = {method: 'stream.publish',
                         message: description_utf8,
                      attachment: JSON.stringify({'caption': caption_utf8}),
                    action_links: '[]',
+                         //эти три параметра надо добавить
                application_key : FAPI.Client.applicationKey,
 		           session_key : FAPI.Client.sessionKey,
 		                format : FAPI.Client.format
                         };
-
+    //рассчет подписи
     sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
-    console.log("sig = " + sig);
+    //вызов окна подтверждения
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }
 
