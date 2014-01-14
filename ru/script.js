@@ -20,7 +20,7 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
           * Второй параметр:
           * функция, которая будет вызвана, если инициализация не удалась.
           */
-          function(error){
+          function(error) {
               processError(error);
           }
 );
@@ -44,7 +44,7 @@ function API_callback(method, result, data) {
 /*
 * Функция для обработки ошибок.
 */
-function processError(e){
+function processError(e) {
     console.log(e);
     alert("I'm so sorrry, but there's an error :(");
 }
@@ -53,60 +53,60 @@ function processError(e){
 * Данная функция вызывается при успешной инициализации.
 * Она содержит несколько примеров использования метода "FAPI.Client.call()".
 */
-function initCard(){
-    //в начале необходимо подготовитьcallback-функции(функции, которые будут вызваны после получения ответа)
+function initCard() {
+    // в начале необходимо подготовитьcallback-функции(функции, которые будут вызваны после получения ответа)
     var callback_users_getCurrentUser = function(method,result,data){
-        if (result){
+        if (result) {
             fillCard(result);
-        }else{
+        } else {
             processError(data);
         }
     };
     
     var callback_friends_get = function(method,result,data){
-        if(result){
+        if(result) {
             var randomFriendId = result[getRandomInt(0,result.length)];
-            var callback_users_getInfo = function(method,result,data){
-                if (result){
+            var callback_users_getInfo = function(method,result,data) {
+                if (result) {
                     document.getElementById("random_friend_name_surname").innerHTML = result[0]["first_name"] + " " + result[0]["last_name"];
-                }else{
+                } else {
                     processError(data);
                 }
             }
-            FAPI.Client.call({"method":"users.getInfo","fields":"first_name,last_name","uids":randomFriendId},callback_users_getInfo); 
-        }else{
+            FAPI.Client.call({"method":"users.getInfo", "fields":"first_name,last_name", "uids":randomFriendId}, callback_users_getInfo); 
+        } else {
             processError(data);
         }
     }
     
-    //а затем вызвать метод "FAPI.Client.call()", передав ему набор параметров и callback-функцию
+    // а затем вызвать метод "FAPI.Client.call()", передав ему набор параметров и callback-функцию
     
-    //пример №1: вызов метода API с параметрами
-    //внимание! порядок параметров значения не имеет
-    FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"},callback_users_getCurrentUser);
-    //пример №2: вызов метода без параметров
-    FAPI.Client.call({"method":"friends.get"},callback_friends_get);    
+    // пример №1: вызов метода API с параметрами
+    // внимание! порядок параметров значения не имеет
+    FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"}, callback_users_getCurrentUser);
+    // пример №2: вызов метода без параметров
+    FAPI.Client.call({"method":"friends.get"}, callback_friends_get);    
 }
 
 /*
 * Пример публикации в ленту.
 */
-function publish(){
+function publish() {
     var description_utf8 = "Can I publish?";
     var caption_utf8 = "Published text";
-    //подготовка параметров для публикации
+    // подготовка параметров для публикации
     feedPostingObject = {method: 'stream.publish',
                         message: description_utf8,
                      attachment: JSON.stringify({'caption': caption_utf8}),
                    action_links: '[]',
-                         //эти три параметра надо добавить
-               application_key : FAPI.Client.applicationKey,
-		           session_key : FAPI.Client.sessionKey,
-		                format : FAPI.Client.format
+                         // эти три параметра надо добавить
+                application_key: FAPI.Client.applicationKey,
+		            session_key: FAPI.Client.sessionKey,
+		                 format: FAPI.Client.format
                         };
-    //рассчет подписи
+    // рассчет подписи
     sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
-    //вызов окна подтверждения
+    // вызов окна подтверждения
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }
 
@@ -117,11 +117,11 @@ function fillCard(userInfo){
     document.getElementById("userPhoto").src = userInfo["pic128x128"];
 }
 
-function getRandomInt(min, max){
+function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function getUrlParameters(parameter, staticURL, decode){
+function getUrlParameters(parameter, staticURL, decode) {
    /*
     Function: getUrlParameters
     Description: Get the value of URL parameters either from 

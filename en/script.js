@@ -22,7 +22,7 @@ FAPI.init(rParams["api_server"], rParams["apiconnection"],
           * this function will be called
           * if initialization would finish with error.
           */
-          function(error){
+          function(error) {
               processError(error);
           }
 );
@@ -46,7 +46,7 @@ function API_callback(method, result, data) {
 /*
 * This function will be called if initialization would fail.
 */
-function processError(e){
+function processError(e) {
     console.log(e);
     alert("I'm so sorrry, but there's an error :(");
 }
@@ -56,11 +56,11 @@ function processError(e){
 * Here you can see some examples of using of "FAPI.Client.call()" method.
 */
 function initCard(){
-    //at the beginning we prepare callback functions
-    var callback_users_getCurrentUser = function(method,result,data){
-        if (result){
+    // at the beginning we prepare callback functions
+    var callback_users_getCurrentUser = function(method,result,data) {
+        if (result) {
             fillCard(result);
-        }else{
+        } else {
             processError(data);
         }
     };
@@ -75,19 +75,19 @@ function initCard(){
                     processError(data);
                 }
             }
-            FAPI.Client.call({"method":"users.getInfo","fields":"first_name,last_name","uids":randomFriendId},callback_users_getInfo); 
+            FAPI.Client.call({"method":"users.getInfo", "fields":"first_name,last_name", "uids":randomFriendId}, callback_users_getInfo); 
         }else{
             processError(data);
         }
     }
     
-    //and then we call the method:
+    // and then we call the method:
     
-    //first example: we need to call method with parameters
-    //parameters' sequence is unimportant!
-    FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"},callback_users_getCurrentUser);
-    //second example: we need to call method without parameters
-    FAPI.Client.call({"method":"friends.get"},callback_friends_get);    
+    // first example: we need to call method with parameters
+    // parameters' sequence is unimportant!
+    FAPI.Client.call({"fields":"first_name,last_name,location,pic128x128","method":"users.getCurrentUser"}, callback_users_getCurrentUser);
+    // second example: we need to call method without parameters
+    FAPI.Client.call({"method":"friends.get"}, callback_friends_get);    
 }
 
 /*
@@ -96,19 +96,19 @@ function initCard(){
 function publish(){
     var description_utf8 = "Can I publish?";
     var caption_utf8 = "Published text";
-    //preparing parameters
+    // preparing parameters
     feedPostingObject = {method: 'stream.publish',
                         message: description_utf8,
                      attachment: JSON.stringify({'caption': caption_utf8}),
                    action_links: '[]',
                          //you have to add this three parameters
-               application_key : FAPI.Client.applicationKey,
-		           session_key : FAPI.Client.sessionKey,
-		                format : FAPI.Client.format
+                application_key: FAPI.Client.applicationKey,
+		            session_key: FAPI.Client.sessionKey,
+		                 format: FAPI.Client.format
                         };
-    //counting signature
+    // counting signature
     sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
-    //showing confirmation
+    // showing confirmation
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }
 
