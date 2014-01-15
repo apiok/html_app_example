@@ -98,14 +98,10 @@ function publish() {
     feedPostingObject = {method: 'stream.publish',
                         message: description_utf8,
                      attachment: JSON.stringify({'caption': caption_utf8}),
-                   action_links: '[]',
-                         // эти три параметра надо добавить
-                application_key: FAPI.Client.applicationKey,
-		            session_key: FAPI.Client.sessionKey,
-		                 format: FAPI.Client.format
+                   action_links: '[]'
                         };
     // рассчет подписи
-    sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
+    sig = FAPI.Client.calcSignature(feedPostingObject);
     // вызов окна подтверждения
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }

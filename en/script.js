@@ -100,14 +100,10 @@ function publish(){
     feedPostingObject = {method: 'stream.publish',
                         message: description_utf8,
                      attachment: JSON.stringify({'caption': caption_utf8}),
-                   action_links: '[]',
-                         //you have to add this three parameters
-                application_key: FAPI.Client.applicationKey,
-		            session_key: FAPI.Client.sessionKey,
-		                 format: FAPI.Client.format
+                   action_links: '[]'
                         };
     // counting signature
-    sig = FAPI.Util.calcSignature(feedPostingObject, FAPI.Client.sessionSecretKey);
+    sig = FAPI.Client.calcSignature(feedPostingObject);
     // showing confirmation
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
 }
