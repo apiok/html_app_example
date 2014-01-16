@@ -2,7 +2,7 @@
 * API initialization.
 * You have to change 2 parameters here.
 */
-var hasPublishPermission;
+var permissionStatus = "SET STATUS";
 var sig;
 var currentUserId;
 var feedPostingObject = {};
@@ -106,6 +106,32 @@ function publish(){
     sig = FAPI.Client.calcSignature(feedPostingObject);
     // showing confirmation
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
+}
+
+/*
+* Example of checking permission.
+* Here we check permission "SET STATUS".
+*/
+function checkSetStatusPermission(){
+    var callback = function(status,result,data){
+        if(result){
+            alert("Разрешение есть");
+        } else {
+            alert("Разрешения нет");
+        }
+    }
+    FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":permissionStatus}, callback);
+}
+
+/*
+* Example of acquiring permission.
+* Here we acquiring permission "SET STATUS".
+*/
+function askSetStatusPermission(){
+    FAPI.UI.showPermissions("[\"" + permissionStatus + "\"]");
+    // after getting a result function API_callback will be called
+    // Attention! If user will unckeck the permission and press button "Allow"
+    // the callback will be called with result "ok", but the permission wouldn't be granted
 }
 
 function fillCard(userInfo){
