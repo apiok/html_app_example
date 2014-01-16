@@ -2,7 +2,7 @@
 * Инициализация API.
 * Здесь необходимо изменить 2 параметра:
 */
-var hasPublishPermission;
+var permissionStatus = "SET STATUS";
 var sig;
 var currentUserId;
 var feedPostingObject = {};
@@ -100,10 +100,36 @@ function publish() {
                      attachment: JSON.stringify({'caption': caption_utf8}),
                    action_links: '[]'
                         };
-    // рассчет подписи
+    // расчет подписи
     sig = FAPI.Client.calcSignature(feedPostingObject);
     // вызов окна подтверждения
     FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
+}
+
+/*
+* Пример проверки разрешения.
+* В данном примере проверяется разрешение на установку статуса.
+*/
+function checkSetStatusPermission(){
+    var callback = function(status,result,data){
+        if(result){
+            alert("Разрешение есть");
+        } else {
+            alert("Разрешения нет");
+        }
+    }
+    FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":permissionStatus}, callback);
+}
+
+/*
+* Пример запроса разрешения.
+* В данном примере запрашивается разрешение на установку статуса.
+*/
+function askSetStatusPermission(){
+    FAPI.UI.showPermissions("[\"" + permissionStatus + "\"]");
+    // в результате будет вызвана функция API_callback
+    // стоит обратить внимание на то, что если пользователь снял галочку, но все равно нажал кнопку "Разрешить",
+    // вернется результат "ok", но разрешение предоставлено не будет
 }
 
 function fillCard(userInfo){
