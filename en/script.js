@@ -134,6 +134,18 @@ function askSetStatusPermission(){
     // the callback will be called with result "ok", but the permission wouldn't be granted
 }
 
+/*
+* Example of setting status.
+*/
+function setUserStatus(){
+    var callback = function(status, result, data){
+        console.log("Function setUserStatus callback: status = " + status + " result = " + result + " data = " + data);
+    };
+    var status = document.getElementById("statusInput").value;
+    var params = {"method":"users.setStatus", "status":status};
+    FAPI.Client.call(params,callback);
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];

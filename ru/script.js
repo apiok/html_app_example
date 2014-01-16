@@ -132,6 +132,18 @@ function askSetStatusPermission(){
     // вернется результат "ok", но разрешение предоставлено не будет
 }
 
+/*
+* Пример установки статуса
+*/
+function setUserStatus(){
+    var callback = function(status, result, data){
+        console.log("Function setUserStatus callback: status = " + status + " result = " + result + " data = " + data);
+    };
+    var status = document.getElementById("statusInput").value;
+    var params = {"method":"users.setStatus", "status":status};
+    FAPI.Client.call(params,callback);
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];
