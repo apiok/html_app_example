@@ -170,6 +170,30 @@ function showInvite2(){
     FAPI.Client.call({"method":"friends.get"},callback);
 }
 
+/*
+* Example ofтnotifying friends.
+*/
+function showNotification(){
+    FAPI.UI.showNotification("Let's play my game!", "arg1=val1");
+    // if success, the third parameter of callback will be string with invited friends' ids, splited with comma
+}
+
+/* 
+* Example of notifying choosed friends.
+* Attention! Method works only with fapi5.
+*/
+function showNotification2(){
+    var callback = function(status, result, data){
+        if(result.length > 2){
+            FAPI.UI.showNotification("Let's play my game!", "arg1=val1", result[0] + ";" + result[1]);
+            // if success, the third parameter of callback will be string with invited friends' ids, splited with comma
+        } else {
+            alert("You have too few friends for this example");
+        }
+    }
+    FAPI.Client.call({"method":"friends.get"},callback);
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];
