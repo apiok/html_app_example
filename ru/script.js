@@ -144,6 +144,30 @@ function setUserStatus(){
     FAPI.Client.call(params,callback);
 }
 
+/*
+* Пример использования диалога приглашения друзей.
+*/
+function showInvite(){
+    FAPI.UI.showInvite("Поиграй в мою игру!", "arg1=val1");
+    // в случае успеха возвращает третьим параметром строку, в которой через запятую указаны id приглашенных друзей
+}
+
+/* 
+* Пример исользования диалога приглашения друзей с предварительным выделением.
+* Внимание! Метод работает только если используется fapi5
+*/
+function showInvite2(){
+    var callback = function(status, result, data){
+        if(result.length > 2){
+            FAPI.UI.showInvite("Поиграй в мою игру!", "arg1=val1", result[0] + ";" + result[1]);
+            // в случае успеха возвращает третьим параметром строку, в которой через запятую указаны id приглашенных друзей
+        } else {
+            alert("Не хватает друзей для примера");
+        }
+    }
+    FAPI.Client.call({"method":"friends.get"},callback);
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];
