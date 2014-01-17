@@ -194,6 +194,16 @@ function showNotification2(){
     FAPI.Client.call({"method":"friends.get"},callback);
 }
 
+/*
+* Example of using showPayment().
+* Attention! Server must confirm payment,  otherwise payment will fail!
+* Attention! There is no checking or saving transaction info in existing example, which is potentially unsecure!
+* The example of payment confirmation you can see at file payment.php.
+*/
+function showPayment(){
+    FAPI.UI.showPayment("Apple", "It is very tasty!", 777, 1, null, null, "ok", "true");
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];

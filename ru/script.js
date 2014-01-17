@@ -192,6 +192,18 @@ function showNotification2(){
     FAPI.Client.call({"method":"friends.get"},callback);
 }
 
+/*
+* Пример вызова showPayment().
+* Внимание! Сервер должен подтвердить оплату, иначе списывание средств пользователя не происходит!
+* Внимание! В существующей версии примера подтверждение на сервере происходит без какой-либо проверки и сохранения информации о платеже,
+* что потенциально небезопасно!
+* Пример подтвержения с сервера можно посмотреть в файле payment.php.
+*/
+function showPayment(){
+    var options = "[\"type\":1]";
+    FAPI.UI.showPayment("Яблоко", "Это очень вкусно!", 777, 1, null, null, "ok", "true");
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];
