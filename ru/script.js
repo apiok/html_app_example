@@ -204,6 +204,13 @@ function showPayment(){
     FAPI.UI.showPayment("Яблоко", "Это очень вкусно!", 777, 1, null, null, "ok", "true");
 }
 
+/*
+* Функция показывает окно с предложением пополнить счет в одноклассниках.
+*/
+function showPortalPayment(){
+    FAPI.UI.showPortalPayment();
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];

@@ -204,6 +204,13 @@ function showPayment(){
     FAPI.UI.showPayment("Apple", "It is very tasty!", 777, 1, null, null, "ok", "true");
 }
 
+/*
+* Function shows window offering to buy oks.
+*/
+function showPortalPayment(){
+    FAPI.UI.showPortalPayment();
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];
