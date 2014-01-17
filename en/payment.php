@@ -1,5 +1,5 @@
 <?php
-//TODO: check and save transaction info :)
+//TODO: check and save transaction info
 // adding header
 header('Content-Type: application/xml');
 //creating xml document
