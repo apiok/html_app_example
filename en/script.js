@@ -227,6 +227,13 @@ function setWindowSize(width, height){
 /*
 * Function for non-public using.
 */
+function navigateTo(){
+    FAPI.UI.navigateTo("http://example1.aws.af.cm/payment.php");
+}
+
+/*
+* Function for non-public using.
+*/
 function showProfileEmail(){
     FAPI.UI.showProfileEmail();
 }
