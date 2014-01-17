@@ -211,6 +211,26 @@ function showPortalPayment(){
     FAPI.UI.showPortalPayment();
 }
 
+/*
+* Изменение размера контейнера.
+* Обратите внимание: размер окна имеет ограничегие!
+* Высота находится в диапазоне 100 - 4000 пикселей, ширина - 100 - 760 пикселей.
+*/
+function setWindowSize(width, height){
+    if((width >= 100) && (width <= 760) && (height >= 100) && (height <= 4000)){
+        FAPI.UI.setWindowSize(width,height);
+    } else {
+        alert("Неверный размер окна!");
+    }
+}
+
+/*
+* Функция используется для внутренних нужд.
+*/
+function showProfileEmail(){
+    FAPI.UI.showProfileEmail();
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];

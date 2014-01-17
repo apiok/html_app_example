@@ -211,6 +211,26 @@ function showPortalPayment(){
     FAPI.UI.showPortalPayment();
 }
 
+/*
+* Example of changing container size.
+* Attention: there are size restrictions!
+* Height: 100 - 4000 px, width: 100 - 760 px.
+*/
+function setWindowSize(width, height){
+    if((width >= 100) && (width <= 760) && (height >= 100) && (height <= 4000)){
+        FAPI.UI.setWindowSize(width,height);
+    } else {
+        alert("Неверный размер окна!");
+    }
+}
+
+/*
+* Function for non-public using.
+*/
+function showProfileEmail(){
+    FAPI.UI.showProfileEmail();
+}
+
 function fillCard(userInfo){
     document.getElementById("name").innerHTML = userInfo["first_name"];
     document.getElementById("surname").innerHTML = userInfo["last_name"];

@@ -1,3 +1,7 @@
+html {
+    margin:5;
+    height:90%;
+}
 
 body {
     margin:10px;
@@ -5,7 +9,7 @@ body {
     border:1px solid silver;
     border-radius:5px;
     width:640px;
-    height:800px;
+    height:99%;
 }
 
 #card {
