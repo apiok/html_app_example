@@ -33,7 +33,10 @@ class Payment {
 		$dom = new DomDocument('1.0'); 
 		
 		// adding root tag - <callbacks_payment_response> 
-		$root = $dom->appendChild($dom->createElement('callbacks_payment_response')); 
+		$root = $dom->appendChild($dom->createElement('callbacks_payment_response'));
+        $attr = $dom->createAttribute("xmlns:ns2");
+		$attr->value = "http://api.forticom.com/1.0/";
+		$root->appendChild($attr);
 		
 		// adding text "true" to <callbacks_payment_response> 
 		$root->appendChild($dom->createTextNode('true')); 
@@ -56,7 +59,6 @@ class Payment {
 		// adding root tag - <ns2:error_response> 
 		$root = $dom->appendChild($dom->createElement('ns2:error_response'));
 		$attr = $dom->createAttribute("xmlns:ns2");
-		
 		$attr->value = "http://api.forticom.com/1.0/";
 		$root->appendChild($attr); 
 		

@@ -33,10 +33,14 @@ class Payment {
 		$dom = new DomDocument('1.0'); 
 		
 		// добавление корневого тега - <callbacks_payment_response> 
-		$root = $dom->appendChild($dom->createElement('callbacks_payment_response')); 
+		$root = $dom->appendChild($dom->createElement('callbacks_payment_response'));
+        $attr = $dom->createAttribute("xmlns:ns2");
+		$attr->value = "http://api.forticom.com/1.0/";
+		$root->appendChild($attr);
 		
 		// добавление текста "true" в тег <callbacks_payment_response> 
 		$root->appendChild($dom->createTextNode('true')); 
+        
 		
 		// генерация xml 
 		$dom->formatOutput = true;
