@@ -94,10 +94,10 @@ class Payment {
 */
 if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount",$_GET)){
 	if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
-		// do something if get request has params product_code and amount, but they are not correct
 		Payment::saveTransactionToDataBase();
 		Payment::returnPaymentOK();
 	} else {
+        // do something if get request has params product_code and amount, but they are not correct
 		Payment::returnPaymentError(3);
 	}
 } else {
