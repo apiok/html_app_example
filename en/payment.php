@@ -7,7 +7,7 @@
 class Payment {
 	// array of pairs product code => price
 	private static $catalog = array(
-		"777" => 2
+		"777" => 1
 	);
 
 	// array of pairs error code => error message
@@ -92,10 +92,16 @@ class Payment {
 /*
 * Payment processing starts here
 */
-if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
-	Payment::saveTransactionToDataBase();
-	Payment::returnPaymentOK();
+if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount",$_GET)){
+	if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
+		// do something if get request has params product_code and amount, but they are not correct
+		Payment::saveTransactionToDataBase();
+		Payment::returnPaymentOK();
+	} else {
+		Payment::returnPaymentError(3);
+	}
 } else {
+	// do something if get request has no params product_code and amount
 	Payment::returnPaymentError(3);
 }
 ?>
