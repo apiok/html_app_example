@@ -80,7 +80,7 @@ class Payment {
         $rootElement = 'ns2:error_response';
 
         $dom = self::createXMLWithRoot($rootElement);
-        $root = $dom->getElementsByTagName($rootElement)->iyems(0);
+        $root = $dom->getElementsByTagName($rootElement)->item(0);
 		// добавление кода ошибки и описания ошибки
 		$el = $dom->createElement('error_code');
 		$el->appendChild($dom->createTextNode($errorCode));
