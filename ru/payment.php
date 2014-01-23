@@ -135,7 +135,7 @@ if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GE
             Payment::returnPaymentError(Payment::ERROR_TYPE_PARAM_SIGNATURE);
         }
     } else {
-        // здесь можно что-нибудь сделать, если информация о покупки некорректна
+        // здесь можно что-нибудь сделать, если информация о покупке некорректна
         Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
     }
 } else {
