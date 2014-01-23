@@ -5,6 +5,12 @@
 * responsing to odnoklassniki server.
 */
 class Payment {
+    const ERROR_TYPE_UNKNOWN = 1;
+    const ERROR_TYPE_SERVISE = 2;
+    const ERROR_TYPE_CALLBACK_INVALID_PYMENT = 3;
+    const ERROR_TYPE_SYSTEM = 9999;
+    const ERROR_TYPE_PARAM_SIGNATURE = 104;
+    
 	// array of pairs product code => price
 	private static $catalog = array(
 		"777" => 1
@@ -21,7 +27,7 @@ class Payment {
 
 	// function checks the correct price of the product
 	public static function checkPayment($productCode, $price){
-		if (array_key_exists($productCode,self::$catalog) && (self::$catalog[$productCode] == $price)) {
+		if (array_key_exists($productCode, self::$catalog) && (self::$catalog[$productCode] == $price)) {
 			return true; 
 		} else {
 			return false;
@@ -29,14 +35,10 @@ class Payment {
 	}
 
 	public static function returnPaymentOK(){
-		// creating xml document
-		$dom = new DomDocument('1.0'); 
-		
-		// adding root tag - <callbacks_payment_response> 
-		$root = $dom->appendChild($dom->createElement('callbacks_payment_response'));
-        $attr = $dom->createAttribute("xmlns:ns2");
-		$attr->value = "http://api.forticom.com/1.0/";
-		$root->appendChild($attr);
+		$rootElement = 'callbacks_payment_response';
+
+        $dom = self::createXMLWithRoot($rootElement);
+        $root = $dom->getElementsByTagName($rootElement)->item(0);
 		
 		// adding text "true" to <callbacks_payment_response> 
 		$root->appendChild($dom->createTextNode('true')); 
@@ -52,16 +54,10 @@ class Payment {
 	}
 
 	public static function returnPaymentError($errorCode){
-	
-		// creating xml document
-		$dom = new DomDocument('1.0'); 
-		
-		// adding root tag - <ns2:error_response> 
-		$root = $dom->appendChild($dom->createElement('ns2:error_response'));
-		$attr = $dom->createAttribute("xmlns:ns2");
-		$attr->value = "http://api.forticom.com/1.0/";
-		$root->appendChild($attr); 
-		
+        $rootElement = 'ns2:error_response';
+
+        $dom = self::createXMLWithRoot($rootElement);
+        $root = $dom->getElementsByTagName($rootElement)->item(0);
 		// adding error code and error message to root element
 		$el = $dom->createElement('error_code');
 		$el->appendChild($dom->createTextNode($errorCode));
@@ -88,22 +84,33 @@ class Payment {
 	public function saveTransactionToDataBase(/* any params you need*/){
 	// add code, that saves transaction info here
 	}
+    
+    private static function createXMLWithRoot($root){
+        // creating xml document
+		$dom = new DomDocument('1.0'); 
+		// adding root tag
+		$root = $dom->appendChild($dom->createElement($root));
+        $attr = $dom->createAttribute("xmlns:ns2");
+		$attr->value = "http://api.forticom.com/1.0/";
+		$root->appendChild($attr);
+        return $dom;
+    }
 
 }
 
 /*
 * Payment processing starts here
 */
-if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount",$_GET)){
+if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GET)){
 	if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
 		Payment::saveTransactionToDataBase();
 		Payment::returnPaymentOK();
 	} else {
         // do something if get request has params product_code and amount, but they are not correct
-		Payment::returnPaymentError(3);
+		Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 	}
 } else {
 	// do something if get request has no params product_code and amount
-	Payment::returnPaymentError(3);
+	Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 }
 ?>

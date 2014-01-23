@@ -5,6 +5,12 @@
 * ответ на запрос сервера одноклассников.
 */
 class Payment {
+    const ERROR_TYPE_UNKNOWN = 1;
+    const ERROR_TYPE_SERVISE = 2;
+    const ERROR_TYPE_CALLBACK_INVALID_PYMENT = 3;
+    const ERROR_TYPE_SYSTEM = 9999;
+    const ERROR_TYPE_PARAM_SIGNATURE = 104;
+      
 	// массив пар код продукта => цена
 	private static $catalog = array(
 		"777" => 1
@@ -21,7 +27,7 @@ class Payment {
 
 	// функция провкерки корректности платежа
 	public static function checkPayment($productCode, $price){
-		if (array_key_exists($productCode,self::$catalog) && (self::$catalog[$productCode] == $price)) {
+		if (array_key_exists($productCode, self::$catalog) && (self::$catalog[$productCode] == $price)) {
 			return true; 
 		} else {
 			return false;
@@ -29,19 +35,14 @@ class Payment {
 	}
 
 	public static function returnPaymentOK(){
-		// создание xml документа
-		$dom = new DomDocument('1.0'); 
-		
-		// добавление корневого тега - <callbacks_payment_response> 
-		$root = $dom->appendChild($dom->createElement('callbacks_payment_response'));
-        $attr = $dom->createAttribute("xmlns:ns2");
-		$attr->value = "http://api.forticom.com/1.0/";
-		$root->appendChild($attr);
+		$rootElement = 'callbacks_payment_response';
+
+        $dom = self::createXMLWithRoot($rootElement);
+        $root = $dom->getElementsByTagName($rootElement)->item(0);
 		
 		// добавление текста "true" в тег <callbacks_payment_response> 
 		$root->appendChild($dom->createTextNode('true')); 
         
-		
 		// генерация xml 
 		$dom->formatOutput = true;
 		$rezString = $dom->saveXML();
@@ -53,22 +54,15 @@ class Payment {
 	}
 
 	public static function returnPaymentError($errorCode){
-	
-		// создание xml документа
-		$dom = new DomDocument('1.0'); 
-		
-		// добавление корневого тега - <ns2:error_response> 
-		$root = $dom->appendChild($dom->createElement('ns2:error_response'));
-		$attr = $dom->createAttribute("xmlns:ns2");
-		
-		$attr->value = "http://api.forticom.com/1.0/";
-		$root->appendChild($attr); 
-		
+        $rootElement = 'ns2:error_response';
+
+        $dom = self::createXMLWithRoot($rootElement);
+        $root = $dom->getElementsByTagName($rootElement)->iyems(0);
 		// добавление кода ошибки и описания ошибки
 		$el = $dom->createElement('error_code');
 		$el->appendChild($dom->createTextNode($errorCode));
 		$root->appendChild($el);
-		if (array_key_exists($errorCode,self::$errors)){
+		if (array_key_exists($errorCode, self::$errors)){
 			$el = $dom->createElement('error_msg');
 			$el->appendChild($dom->createTextNode(self::$errors[$errorCode]));
 			$root->appendChild($el);
@@ -90,6 +84,17 @@ class Payment {
 	public function saveTransactionToDataBase(/* any params you need*/){
 	// опишити здесь сохранение информации о транзакции в свою базу данных
 	}
+    
+    private static function createXMLWithRoot($root){
+        // создание xml документа
+		$dom = new DomDocument('1.0'); 
+		// добавление корневого тега
+		$root = $dom->appendChild($dom->createElement($root));
+        $attr = $dom->createAttribute("xmlns:ns2");
+		$attr->value = "http://api.forticom.com/1.0/";
+		$root->appendChild($attr);
+        return $dom;
+    }
 
 }
 
@@ -102,10 +107,10 @@ if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount",$_GET
 		Payment::returnPaymentOK();
 	} else {
         // тут можно что-нибудь сделать, если поля amount и product_code есть в запросе, но их значение некорректно
-		Payment::returnPaymentError(3);
+		Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 	}
 } else {
 	// здесь можно что-нибудь сделать, если полей amount и product_code нет в запросе
-	Payment::returnPaymentError(3);
+	Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 }
 ?>
