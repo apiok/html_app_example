@@ -125,7 +125,7 @@ class Payment {
 /*
 * Обработка платежа начинается отсюда
 */
-if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GET) && array_key_exists("sig", $_GET)){
+if (array_key_exists("product_code", $_GET) && array_key_exists("amount", $_GET) && array_key_exists("sig", $_GET)){
     if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
         if ($_GET["sig"] == Payment::calcSignature($_GET)){
             Payment::saveTransaction();
