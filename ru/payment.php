@@ -10,6 +10,10 @@ class Payment {
     const ERROR_TYPE_CALLBACK_INVALID_PYMENT = 3;
     const ERROR_TYPE_SYSTEM = 9999;
     const ERROR_TYPE_PARAM_SIGNATURE = 104;
+    
+    // в эти переменные следует записать открытый и секретный ключи приложения
+    const APP_PUBLIC_KEY = "";
+    const APP_SECRET_KEY = "";
       
 	// массив пар код продукта => цена
 	private static $catalog = array(
@@ -24,6 +28,21 @@ class Payment {
 			9999 => "SYSTEM: critical system error. Please contact application support team.",
 			104 => "PARAM_SIGNATURE: invalid signature. Please contact application support team."
     );
+    
+    // функция рассчитывает подпись для пришедшего запроса
+    // подробнее про алгоритм расчета подписи можно посмотреть в документации (http://apiok.ru/wiki/pages/viewpage.action?pageId=46137373#API%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F%28%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9%29-%D0%90%D1%83%D1%82%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F%D0%B8%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F)
+    public static function calcSignature($request){
+        $tmp = $request;
+        unset($tmp["sig"]);
+        ksort($tmp);
+        $resstr = "";
+        foreach($tmp as $key=>$value){
+            $resstr = $resstr.$key."=".$value;
+        }
+        $resstr = $resstr.self::APP_SECRET_KEY;
+        return md5($resstr);
+        
+    }
 
 	// функция провкерки корректности платежа
 	public static function checkPayment($productCode, $price){
@@ -33,7 +52,9 @@ class Payment {
 			return false;
 		}
 	}
-
+    
+    // функция возвращает ответ на сервер одноклассников
+    // о корректном платеже
 	public static function returnPaymentOK(){
 		$rootElement = 'callbacks_payment_response';
 
@@ -53,6 +74,8 @@ class Payment {
 		print $rezString;
 	}
 
+    // функция возвращает ответ на сервер одноклассников
+    // об ошибочном платеже и информацию лб ошибке
 	public static function returnPaymentError($errorCode){
         $rootElement = 'ns2:error_response';
 
@@ -85,6 +108,7 @@ class Payment {
 	// опишити здесь сохранение информации о транзакции в свою базу данных
 	}
     
+    // функция создает объект DomDocument и добавляет в него в качестве корневого тега $root
     private static function createXMLWithRoot($root){
         // создание xml документа
 		$dom = new DomDocument('1.0'); 
@@ -101,16 +125,21 @@ class Payment {
 /*
 * Обработка платежа начинается отсюда
 */
-if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount",$_GET)){
+if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GET) && array_key_exists("sig", $_GET)){
 	if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
-		Payment::saveTransactionToDataBase();
-		Payment::returnPaymentOK();
+        if ($_GET["sig"] == Payment::calcSignature($_GET)){
+            Payment::saveTransactionToDataBase();
+            Payment::returnPaymentOK();
+        } else {
+            // здесь можно что-нибудь сделать, если подпись неверная
+            Payment::returnPaymentError(Payment::ERROR_TYPE_PARAM_SIGNATURE);
+        }
 	} else {
-        // тут можно что-нибудь сделать, если поля amount и product_code есть в запросе, но их значение некорректно
+        // здесь можно что-нибудь сделать, если информация о покупки некорректна
 		Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 	}
 } else {
-	// здесь можно что-нибудь сделать, если полей amount и product_code нет в запросе
+	// здесь можно что-нибудь сделать, если информация о покупке или подпись отсутствуют в запросе
 	Payment::returnPaymentError(Payment::ERROR_TYPE_CALLBACK_INVALID_PYMENT);
 }
 ?>
