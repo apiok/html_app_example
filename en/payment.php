@@ -104,7 +104,7 @@ class Payment {
     }
 
     // It is recommended to keep all transactions info
-    public function saveTransactionToDataBase(/* any params you need*/){
+    public function saveTransaction(/* any params you need*/){
     // add code, that saves transaction info here
     }
     
@@ -128,7 +128,7 @@ class Payment {
 if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GET) && array_key_exists("sig", $_GET)){
     if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
         if ($_GET["sig"] == Payment::calcSignature($_GET)){
-            Payment::saveTransactionToDataBase();
+            Payment::saveTransaction();
             Payment::returnPaymentOK();
         } else {
             // do something here if signature is incorrect

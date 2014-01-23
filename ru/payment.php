@@ -104,8 +104,8 @@ class Payment {
     }
 
     // Рекомендуется хранить информацию обо всех транзакциях
-    public function saveTransactionToDataBase(/* any params you need*/){
-    // опишити здесь сохранение информации о транзакции в свою базу данных
+    public function saveTransaction(/* any params you need*/){
+    // тут может быть код для сохранения информации о транзакции
     }
     
     // функция создает объект DomDocument и добавляет в него в качестве корневого тега $root
@@ -128,7 +128,7 @@ class Payment {
 if ((array_key_exists("product_code", $_GET)) && array_key_exists("amount", $_GET) && array_key_exists("sig", $_GET)){
     if (Payment::checkPayment($_GET["product_code"], $_GET["amount"])){
         if ($_GET["sig"] == Payment::calcSignature($_GET)){
-            Payment::saveTransactionToDataBase();
+            Payment::saveTransaction();
             Payment::returnPaymentOK();
         } else {
             // здесь можно что-нибудь сделать, если подпись неверная
