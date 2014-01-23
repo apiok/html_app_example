@@ -17,10 +17,10 @@ class Payment {
 			3 => "CALLBACK_INVALID_PAYMENT: invalid payment data. Please try again later. If error repeats, contact application support team. ",
 			9999 => "SYSTEM: critical system error. Please contact application support team.",
 			104 => "PARAM_SIGNATURE: invalid signature. Please contact application support team."
-				);
+    );
 
 	// функция провкерки корректности платежа
-	public static function checkpayment($productCode, $price){
+	public static function checkPayment($productCode, $price){
 		if (array_key_exists($productCode,self::$catalog) && (self::$catalog[$productCode] == $price)) {
 			return true; 
 		} else {
