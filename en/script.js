@@ -197,7 +197,6 @@ function showNotification2(){
 /*
 * Example of using showPayment().
 * Attention! Server must confirm payment,  otherwise payment will fail!
-* Attention! There is no checking or saving transaction info in existing example, which is potentially unsecure!
 * The example of payment confirmation you can see at file payment.php.
 */
 function showPayment(){
