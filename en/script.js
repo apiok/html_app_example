@@ -115,9 +115,9 @@ function publish(){
 function checkSetStatusPermission(){
     var callback = function(status,result,data){
         if(result){
-            alert("Разрешение есть");
+            alert("Yes");
         } else {
-            alert("Разрешения нет");
+            alert("No");
         }
     }
     FAPI.Client.call({"method":"users.hasAppPermission", "ext_perm":permissionStatus}, callback);
@@ -219,7 +219,7 @@ function setWindowSize(width, height){
     if((width >= 100) && (width <= 760) && (height >= 100) && (height <= 4000)){
         FAPI.UI.setWindowSize(width,height);
     } else {
-        alert("Неверный размер окна!");
+        alert("Incorrect window size!");
     }
 }
 
