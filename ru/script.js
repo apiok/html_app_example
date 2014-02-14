@@ -223,6 +223,22 @@ function setWindowSize(width, height){
 }
 
 /*
+* Метод прокручивает страницу к началу.
+* Внимание! Метод работает только если используется fapi5.
+*/
+function scrollToTop(){
+    FAPI.UI.scrollToTop();
+}
+
+/*
+* Вызываетс API_callback с параметром data, содержащим (clientWidth,clientHeight,scrollLeft,scrollTop,offsetLeft,offsetTop,innerHeight,innerWidth).
+* Внимание! Метод работает только если используется fapi5.
+*/
+function getPageInfo(){
+    FAPI.UI.getPageInfo();
+}
+
+/*
 * Функция используется для внутренних нужд.
 */
 function navigateTo(){

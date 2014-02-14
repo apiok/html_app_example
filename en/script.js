@@ -224,6 +224,22 @@ function setWindowSize(width, height){
 }
 
 /*
+* Scrolls page to top.
+* Attention! Method works only with fapi5.
+*/
+function scrollToTop(){
+    FAPI.UI.scrollToTop();
+}
+
+/*
+* Calls API_callback with data consisting of (clientWidth,clientHeight,scrollLeft,scrollTop,offsetLeft,offsetTop,innerHeight,innerWidth).
+* Attention! Method works only with fapi5.
+*/
+function getPageInfo(){
+    FAPI.UI.getPageInfo();
+}
+
+/*
 * Function for non-public using.
 */
 function navigateTo(){
