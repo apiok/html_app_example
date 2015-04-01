@@ -104,7 +104,7 @@ class Payment {
     }
 
     // Рекомендуется хранить информацию обо всех транзакциях
-    public function saveTransaction(/* any params you need*/){
+    public static function saveTransaction(/* any params you need*/){
     // тут может быть код для сохранения информации о транзакции
     }
     
