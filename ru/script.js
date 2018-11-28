@@ -92,18 +92,27 @@ function initCard() {
 * Пример публикации в ленту.
 */
 function publish() {
-    var description_utf8 = "Can I publish?";
-    var caption_utf8 = "Published text";
-    // подготовка параметров для публикации
-    feedPostingObject = {method: 'stream.publish',
-                        message: description_utf8,
-                     attachment: JSON.stringify({'caption': caption_utf8}),
-                   action_links: '[]'
-                        };
-    // расчет подписи
-    sig = FAPI.Client.calcSignature(feedPostingObject);
-    // вызов окна подтверждения
-    FAPI.UI.showConfirmation('stream.publish', description_utf8, sig);
+    FAPI.UI.postMediatopic({
+        "media":[
+            {
+                "type": "text",
+                "text": "Here you can see odnoklassniki API docs (click the link)"
+            },
+            {
+                "type": "link",
+                "url": "https://apiok.ru"
+            },
+            {
+                "type": "poll",
+                "question": "Do you like our API?",
+                "answers": [
+                    { "text": "Yes" },
+                    { "text": "No" }
+                ],
+                "options": "SingleChoice,AnonymousVoting"
+            }
+        ]
+    }, false);
 }
 
 /*
